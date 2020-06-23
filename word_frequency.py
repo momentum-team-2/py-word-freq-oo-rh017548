@@ -7,19 +7,21 @@ STOP_WORDS = [
 
 class FileReader:
     def __init__(self, filename):
-        pass
+        self.filename = filename
 
     def read_contents(self):
         """
         This should read all the contents of the file
         and return them as one string.
         """
-        raise NotImplementedError("FileReader.read_contents")
-
+        file_list = [line.strip() for line in open(self.filename)]
+        return file_list
 
 class WordList:
+    punctuation = ['.', '?', '!', '-']
     def __init__(self, text):
-        pass
+        self.text = text
+        
 
     def extract_words(self):
         """
@@ -27,14 +29,22 @@ class WordList:
         is responsible for lowercasing all words and stripping
         them of punctuation.
         """
-        raise NotImplementedError("WordList.extract_words")
+        words_text = self.text.lower()
+        words_text = words_text.split()
+
+        words_nopunct = [word for word in words_text if word not in punctuation]
+        return words_nopunct
+        
+        
 
     def remove_stop_words(self):
         """
         Removes all stop words from our word list. Expected to
         be run after extract_words.
         """
-        raise NotImplementedError("WordList.remove_stop_words")
+        poem_wordlist = [item for item in words_nopunct if item not in STOP_WORDS]
+        return poem_wordlist
+       
 
     def get_freqs(self):
         """
@@ -43,12 +53,20 @@ class WordList:
         extract_words and remove_stop_words. The data structure
         could be a dictionary or another type of object.
         """
-        raise NotImplementedError("WordList.get_freqs")
+        poem_words = {} # makes an empty dictionary
+    
+    
+        for word in poem_wordlist: # loops over each word in the text
+            if word in poem_words: # This checks to see if the word is in the dictionary
+                poem_words[word] = poem_words[word] + 1 # If the word is in the dictionary increase the count by 1
+            else: 
+                poem_words[word] = 1 # if the word is not in the dictionary add it.
+        
 
 
 class FreqPrinter:
     def __init__(self, freqs):
-        pass
+        self.freqs = freqs
 
     def print_freqs(self):
         """
@@ -67,7 +85,9 @@ class FreqPrinter:
        rights | 6    ******
         right | 6    ******
         """
-        raise NotImplementedError("FreqPrinter.print_freqs")
+        for key in (poem_words.keys()): 
+            print(key.rjust(20), "|", poem_words[key], '*' * poem_words[key] ) 
+        
 
 
 if __name__ == "__main__":
